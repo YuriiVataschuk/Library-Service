@@ -3,8 +3,4 @@ from django.db import models
 
 
 class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=55)
-    last_name = models.CharField(max_length=55)
-    password = models.CharField(max_length=55)
-    is_Stuff = models.BooleanField()
+    pass
