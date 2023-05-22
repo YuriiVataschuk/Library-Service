@@ -1,12 +1,17 @@
 from django.db import models
 
+from books.models import Book
+
 
 class Borrowing(models.Model):
     borrow_date = models.DateField()
     expected_return_date = models.DateField()
-    actual_return_date = models.DateField()
-    book_id = models.IntegerField()
-    user_id = models.IntegerField()
+    actual_return_date = models.DateField(blank=True, null=True)
+    book_id = models.ForeignKey(Book, on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(Book, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        ordering = ["borrow_date"]
 
 
 class Payment(models.Model):
