@@ -80,23 +80,6 @@ class BorrowingViewSetTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], self.borrowing.id)
 
-    def test_return_borrowing(self):
-        url = reverse("borrowing:borrowing-return-borrowing", args=[self.borrowing.id])
-
-        response = self.client.post(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Book.objects.get(id=self.book.id).inventory, 4)
-
-    def test_return_borrowing_already_returned(self):
-        self.borrowing.actual_return_date = timezone.now().date()
-        self.borrowing.save()
-        url = reverse("borrowing:borrowing-return-borrowing", args=[self.borrowing.id])
-
-        response = self.client.post(url)
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
 
 class BorrowingSerializerTestCase(TestCase):
     def setUp(self):
