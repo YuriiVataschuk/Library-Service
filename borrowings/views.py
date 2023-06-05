@@ -1,5 +1,6 @@
-from rest_framework import viewsets
-
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from borrowings.models import Borrowing
 from borrowings.permissions import IsOwnerOrAdmin
@@ -39,3 +40,18 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         elif self.action == "return_borrowing":
             return BorrowingReturnSerializer
         return BorrowingDetailSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        borrowing = serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=True, methods=["put"])
+    def return_borrowing(self, request, pk=None):
+        borrowing = self.get_object()
+        serializer = self.get_serializer(borrowing, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

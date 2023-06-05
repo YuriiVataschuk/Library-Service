@@ -22,15 +22,16 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         model = Borrowing
         exclude = ("actual_return_date", "user")
 
-    def validate(self, attrs):
-        book = attrs["book"]
+    def create(self, validated_data):
+        book = validated_data["book"]
         if book.inventory == 0:
             raise serializers.ValidationError("Book is out of stock.")
 
         book.inventory -= 1
         book.save()
 
-        return attrs
+        borrowing = Borrowing.objects.create(**validated_data)
+        return borrowing
 
 
 class BorrowingReturnSerializer(serializers.ModelSerializer):
